@@ -6,8 +6,8 @@ import { GET, POST, PUT } from '../DbApi/useFetch';
 
 function ViewDetailsPage(){ 
     let { id } = useParams();
-    const { data, loading, error } = useFetch();
-    const [videoData, setVideoData] = useState({});
+    //const { data, loading, error } = useFetch();
+    const [videoData, setVideoData] = useState(null);
     
     useEffect(() => {
         const response = GET("https://localhost:7037/api/Video/"+id);
@@ -15,17 +15,31 @@ function ViewDetailsPage(){
             const status = r.status;
             if( status == 200 ){
                 setVideoData(r.data);
+                console.log(r.data);
             }
         } )
     },[id]);
 
+    const detail = (
+        <div>
+            <p>{"Video Link:   "+videoData.link}</p>
+            <p>{"Uploaded By:   "+videoData.user.email}</p>
+            <p>{"Views:  "+videoData.views}</p>
+        </div>
+    );
+
     return(
         <React.StrictMode>
-            <ul>
-                <li><p>{videoData.title}</p></li>
-                <li><p>{videoData.description}</p></li>
-                <li><p>{videoData.user.email}</p></li>
-            </ul>
+            <div className="container">
+                <div className="row" >
+                    <div className="col-md-12" >
+                        <h1>Details Page</h1>
+
+                        { videoData == null ? <div></div> : detail }
+
+                    </div>
+                </div>
+            </div>
         </React.StrictMode>
     );
 }

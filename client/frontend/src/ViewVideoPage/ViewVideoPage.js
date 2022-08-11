@@ -32,9 +32,9 @@ function ViewVideoPage(){
         PUT("https://localhost:7037/api/Video/UpdateViewById/"+id);
     },[id]);
 
-    const SeeDetails = () => {
+    const SeeDetails = (e) => {
         e.preventDefault();
-        navigate("/ViewDetailsPage");
+        navigate("/ViewDetailsPage/"+id);
     }
 
     return(
