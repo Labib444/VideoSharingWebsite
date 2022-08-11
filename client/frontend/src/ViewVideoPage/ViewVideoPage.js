@@ -2,10 +2,10 @@
 import React, {useState, useEffect} from 'react';
 import './ViewVideoPage.css';
 import { useNavigate, useParams } from "react-router-dom";
-import { GET } from '../DbApi/useFetch';
+import { GET, POST, PUT, useFetch } from '../DbApi/useFetch';
 
 function ViewVideoPage(){
-    
+    let navigate = useNavigate();
     let { id } = useParams();
     const [data, setData] = useState({});
 
@@ -29,9 +29,13 @@ function ViewVideoPage(){
                 console.log(r.data);
             }
         } )
+        PUT("https://localhost:7037/api/Video/UpdateViewById/"+id);
     },[id]);
 
-
+    const SeeDetails = () => {
+        e.preventDefault();
+        navigate("/ViewDetailsPage");
+    }
 
     return(
         <React.StrictMode>
@@ -51,9 +55,10 @@ function ViewVideoPage(){
                 </div>
                 <div class="row inputRow">
                     <div class="col-md-12 inputRowContainer">
-                        <div class="inputButton"><button>Details</button></div>
+                        <div class="inputButton"><button onClick={SeeDetails} >Details</button></div>
                         <div class="inputButton"><button>Like</button><span> 100</span></div>
                         <div class="inputButton"><button>DisLike</button><span> 10</span></div>
+                        <div class="inputButton"><button>Views</button><span>{data.views}</span></div>
                     </div>
                 </div>
             </div>

@@ -66,6 +66,7 @@ namespace API.Controllers
             //var refreshToken = GenerateRefreshToken();
             //SetRefreshToken(refreshToken);
             string token = CreateToken(request);
+
             return Ok(token);
         }
 

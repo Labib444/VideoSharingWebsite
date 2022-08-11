@@ -6,13 +6,15 @@ import '../reset.css';
 import './SignUp.css';
 import { useCookies } from 'react-cookie';
 import { useRef } from 'react';
-import {POST} from '../DbApi/useFetch';
+import {POST, GET} from '../DbApi/useFetch';
 import {useNavigate, useParams} from 'react-router-dom';
 
 function SignUp(){
 
     let navigate = useNavigate();
+    
     const [cookies, setCookie, removeCookie] = useCookies(['TOKEN']);
+    const [cookies2, setCookie2, removeCookie2] = useCookies(['USER_ID']);
 
     const emailRef = useRef(null);
     const emailRefMessage = useRef(null);
@@ -63,6 +65,10 @@ function SignUp(){
             console.log( r.data );
             r.then( function(r){
                 setCookie("TOKEN", r, { path: '/' });
+            } );
+            const id = GET("https://localhost:7037/GetByEmail/"+ emailRef.current.value);
+            id.then( function(r){
+                setCookie2("USER_ID", r.data.uId, { path: '/' });
                 navigate("/");
             } );
         }
@@ -96,7 +102,7 @@ function SignUp(){
                                 <span ref={submitButtonRefMessage} class="messageSpan" ></span>
                             </fieldset>
                             <fieldset class="messageSpanSignUpFieldSet">
-                                <p class="messageSpanSignUp" >Don't have an account? <a href="#">Sign Up</a></p>
+                                <p class="messageSpanSignUp" >Don't have an account? <a href="/Login">Sign Up</a></p>
                             </fieldset>
                         </form>
                     

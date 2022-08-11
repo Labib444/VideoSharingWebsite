@@ -5,13 +5,22 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../reset.css';
 import './AddVideoPage.css';
 import { POST } from '../DbApi/useFetch';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function AddVideoPage(){
 
+    let navigate = useNavigate();
+    const [cookies2, setCookie2, removeCookie2] = useCookies(['USER_ID']);
+    
     const videoLinkRef = useRef(null);
     const videoLinkMessageRef = useRef(null);
 
     const submitButtonMessageRef = useRef(null);
+
+    const delay = ms => new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
 
     const clearAllError = () => {
         videoLinkMessageRef.current.innerHTML = "";
@@ -34,7 +43,7 @@ function AddVideoPage(){
         return true;
     }
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
         clearAllError();
         const a = emptyError(videoLinkRef, videoLinkMessageRef);
@@ -43,7 +52,7 @@ function AddVideoPage(){
             const url = "https://localhost:7037/api/Video";
             const data = {
                 "vId": 0,
-                "uId": 1,
+                "uId": cookies2.USER_ID,
                 "user": {
                 "uId": 0,
                 "email": "user@example.com",
@@ -53,6 +62,8 @@ function AddVideoPage(){
                 "views": 0
             }
             POST(url, data);
+            await delay(1000);
+            navigate("/");
         }
     }
 

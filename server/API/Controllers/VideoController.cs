@@ -36,6 +36,27 @@ namespace API.Controllers
         }
 
 
+        [HttpPut("UpdateViewById/{id}")]
+        [ProducesResponseType(typeof(Video), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Video), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateViewById(int id)
+        {
+            var video = await _context.Videos.FindAsync(id);
+            video.Views += 1;
+            _context.Entry(video).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return video == null ? NotFound() : Ok(video);
+        }
+
+        [HttpGet("GetUserVideos/{id}")]
+        [ProducesResponseType(typeof(Video), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Video), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetVideosByUserId(int id)
+        {
+            var video = await _context.Videos.Where(x => x.UId == id).ToListAsync();
+            return video == null ? NotFound() : Ok(video);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateVideo(Video video)
         {

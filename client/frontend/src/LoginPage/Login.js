@@ -14,7 +14,8 @@ import {POST, GET} from '../DbApi/useFetch';
 function Login(){
     
     let navigate = useNavigate();
-    const [cookies, setCookie, removeCookie] = useCookies(['TOKEN']); 
+    const [cookies, setCookie, removeCookie] = useCookies(['TOKEN']);
+    const [cookies2, setCookie2, removeCookie2] = useCookies(['USER_ID']);
 
     const emailRef = useRef(null);
     const emailRefMessage = useRef(null);
@@ -58,7 +59,12 @@ function Login(){
         return true;
     }
 
-    const submit = (event) => {
+
+    const delay = ms => new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
+    
+    const submit = async (event) => {
         event.preventDefault();
 
         //var {data, loading, error} = GET("https://localhost:7037/api/User");
@@ -70,9 +76,6 @@ function Login(){
         const d = invalidEmailCheck();
         const e = confirmPasswordMatch(passwordRef, confirmPasswordRef, confirmPasswordRefMessage);
         
-        const utf8Encode = new TextEncoder();
-        const byteArr = utf8Encode.encode("abc");
-        
         if( a && b && c && d && e ){
             
             var userData = {
@@ -83,22 +86,21 @@ function Login(){
 
             const response = GET("https://localhost:7037/GetByEmail/"+emailRef.current.value);
             response.then( function(r){
-                const status = r.status;
-                if( status == 200 ){
+                if( r.data != "NOT FOUND" ){
                     submitButtonRefMessage.current.innerHTML = "The Account already exists!";
                 }else{
                     const r = POST("https://localhost:7037/api/User", userData);
-                    r.then( function(r){
-                        setCookie("TOKEN", r.data, { path: '/' });
-                    } );
+                    //if( r.status == 201 ){
+                        r.then( function(r){
+                            setCookie("TOKEN", r.data, { path: '/' });
+                        } );
+                        navigate("/SignUp");
+                    // }else{
+                    //     submitButtonRefMessage.current.innerHTML = "Something went wrong!";
+                    // }
                 }
             } )
         }
-    }
-
-    const linkClick = (e) => {
-        e.preventDefault();
-        navigate("/SignUp");
     }
 
     return(
@@ -134,7 +136,7 @@ function Login(){
                                 <span ref={submitButtonRefMessage} class="messageSpan" ></span>
                             </fieldset>
                             <fieldset class="messageSpanSignUpFieldSet">
-                                <p class="messageSpanSignUp">Don't have an account?<a onClick={linkClick} href="#">SignUp</a></p>
+                                <p class="messageSpanSignUp">Already have an account?<a href="/SignUp">Login</a></p>
                             </fieldset>
                         </form>
                     

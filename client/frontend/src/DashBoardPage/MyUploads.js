@@ -2,17 +2,29 @@
 import React, { useLayoutEffect } from 'react';
 import {useState, useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import './reset.css';
-import useFetch from './DbApi/useFetch';
-import {GET} from './YoutubeApi/useFetch';
+import '../reset.css';
+import useFetch from '../DbApi/useFetch';
+import {GET} from '../YoutubeApi/useFetch';
 import { useNavigate } from 'react-router-dom';
-import './Home.css';
+import { useCookies } from 'react-cookie';
+import './MyUploads.css';
 
 
-function Home(){
+function MyUploads(){
     let navigate = useNavigate();
+
+    const [cookies, setCookie, removeCookie] = useCookies(['TOKEN']);
+    const [cookies2, setCookie2, removeCookie2] = useCookies(['USER_ID']);
+
+    useLayoutEffect( () => {
+        if( cookies.TOKEN == null )
+            navigate("/");
+    },[cookies] );
+
+
+
     const [youtubeData, setYoutubeData] = useState(null);
-    const { data, loading, error, refetch } = useFetch("https://localhost:7037/api/Video");
+    const { data, loading, error, refetch } = useFetch("https://localhost:7037/api/Video/GetUserVideos/"+cookies2.USER_ID);
 
     const getIdFromUrl = (link) => {
         var video_id = link.split('v=')[1];
@@ -126,7 +138,7 @@ function Home(){
 }
 
 
-export default Home;
+export default MyUploads;
 
 
 

@@ -21,6 +21,20 @@ export async function GET(url){
     return res;
 }
 
+export function PUT(url){
+    const res = axios
+        .put(url)
+        .then((response) => {
+            //setData(response.data);
+            console.log(response.data);
+        })
+        .catch((err) => {
+            //setError(err);
+            console.log(err);
+        })
+    return res;
+}
+
 
 
 function useFetch(url) {
