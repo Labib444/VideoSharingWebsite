@@ -1,11 +1,27 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-import axios from 'axios';
-import {useState, useEffect} from 'react';
+
+export function POST(url, data){
+    const res = axios
+        .post(url, data)
+        .then((response) => {
+            //setData(response.data);
+            console.log(response.data);
+        })
+        .catch((err) => {
+            //setError(err);
+            console.log(err);
+        })
+    return res;
+}
 
 export async function GET(url){
     const res = await axios.get(url);
     return res;
 }
+
+
 
 function useFetch(url) {
     const [data, setData] = useState(null);

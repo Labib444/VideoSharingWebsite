@@ -34,6 +34,15 @@ namespace API.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
+        [HttpGet("/GetByEmail/{email}")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(User), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            List<User> user = await _context.Users.Where( x => x.Email.Equals(email) ).ToListAsync(); //returns true or false
+            return user.Count == 0 ? NotFound() : Ok(email);
+        }
+
         //[EnableCors("https://localhost:3000","*", "*")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

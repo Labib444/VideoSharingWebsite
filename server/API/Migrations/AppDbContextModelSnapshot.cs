@@ -21,45 +21,6 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("API.Model.Reaction", b =>
-                {
-                    b.Property<int>("RId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RId"), 1L, 1);
-
-                    b.Property<bool>("ReactionType")
-                        .HasColumnType("bit");
-
-                    b.HasKey("RId");
-
-                    b.ToTable("Reactions");
-                });
-
-            modelBuilder.Entity("API.Model.ReactionRelation", b =>
-                {
-                    b.Property<int>("RId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RId"), 1L, 1);
-
-                    b.Property<int>("UId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RId");
-
-                    b.HasIndex("UId");
-
-                    b.HasIndex("VId");
-
-                    b.ToTable("ReactionRelations");
-                });
-
             modelBuilder.Entity("API.Model.User", b =>
                 {
                     b.Property<int>("UId")
@@ -69,6 +30,10 @@ namespace API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UId"), 1L, 1);
 
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -89,15 +54,20 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Views")
                         .HasColumnType("int");
 
                     b.HasKey("VId");
 
+                    b.HasIndex("UId");
+
                     b.ToTable("Videos");
                 });
 
-            modelBuilder.Entity("API.Model.ReactionRelation", b =>
+            modelBuilder.Entity("API.Model.Video", b =>
                 {
                     b.HasOne("API.Model.User", "user")
                         .WithMany()
@@ -105,15 +75,7 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Model.Video", "video")
-                        .WithMany()
-                        .HasForeignKey("VId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("user");
-
-                    b.Navigation("video");
                 });
 #pragma warning restore 612, 618
         }

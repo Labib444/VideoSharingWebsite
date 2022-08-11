@@ -1,0 +1,61 @@
+.top_container {
+    margin-top: 10%;
+}
+
+.bottom_container{
+    margin-bottom: 10%;
+}
+
+.main {
+    width: 25%;
+    height: 100%;
+    border: 3px solid #ffcc99;
+    border-radius: 15px;
+    padding: 3%;   
+    font-family: Open Sans Light;
+    /* box-shadow: 3px 3px 3px 3px #888888; */
+}
+
+.header {
+    margin-bottom: 5%;
+    color: #ff9933;
+}
+
+.section {
+    /* border: 1px solid red; */
+}
+
+fieldset:not(:last-of-type) {
+    margin-bottom: 5%;
+}
+
+label {
+    color: #ff9933;
+    font-size: 0.95em;
+}
+
+input {
+    width: 100%;
+    border: 2px solid #ff9933;
+    border-radius: 5px;
+    font-size: 1em;
+    padding: 6px;
+}
+
+.submitButton {
+    background-color: #ff9933;
+    color: white;
+    margin-top: 5%;
+}
+
+.messageSpan{
+    color: red;
+}
+
+.messageSpanSignUp{
+    color: black;
+}
+
+.messageSpanSignUpFieldSet{
+    text-align: center;
+}

@@ -1,25 +1,57 @@
 import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+
+import Login from './LoginPage/Login';
+import SignUp from './SignUpPage/SignUp';
+import AddVideoPage from './AddVideoPage/AddVideoPage';
+import ViewVideoPage from './ViewVideoPage/ViewVideoPage';
+import Home from './Home';
+import LogoutPage from './LogoutPage/LogoutPage';
+import { useCookies } from 'react-cookie';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  const [cookies, setCookie, removeCookie] = useCookies(['TOKEN']);
+
+    const logout = <a class="nav-link" href="/Logout">Logout</a>;
+    const login = <a class="nav-link" href="/SignUp">Login</a>;
+
+    const shareNewVideo = (
+        <li class="nav-item">
+            <a class="nav-link" href="/AddVideo">Share New Video</a>
+        </li>
+    );
+
+    return (
+        <Router>
+            <nav class="navbar navbar-expand-lg navigation">
+                <div class="container">
+                <a class="navbar-brand" href="/">VideoSharing</a>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    { cookies.TOKEN == null ? null : shareNewVideo }
+                    </ul>
+                    <span class="navbar-text">
+                        { cookies.TOKEN == null ? login : logout }
+                    </span>
+                </div>
+                </div>
+            </nav>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/Login" element={<Login />} />
+                <Route path="/SignUp" element={<SignUp />} />
+                <Route path="/AddVideo" element={<AddVideoPage />} />
+                <Route path="/ViewVideoPage/:id" element={<ViewVideoPage />} />
+                <Route path="/Logout" element={<LogoutPage />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;

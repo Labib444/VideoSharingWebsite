@@ -28,9 +28,9 @@ namespace API.Data
 
         public DbSet<Video> Videos { get; set; }
 
-        public DbSet<ReactionRelation> ReactionRelations { get; set; }
+        //public DbSet<ReactionRelation> ReactionRelations { get; set; }
 
-        public DbSet<Reaction> Reactions { get; set; }
+        //public DbSet<Reaction> Reactions { get; set; }
 
 
         

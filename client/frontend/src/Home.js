@@ -1,126 +1,123 @@
 
-// <!DOCTYPE html>
-// <html lang="en">
-// <head>
-//     <meta charset="UTF-8">
-//     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//     <title>Document</title>
-//     <!-- CSS only -->
-//     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-//     <script src="https://kit.fontawesome.com/820903d82a.js" crossorigin="anonymous"></script>
-//     <link href="reset.css" rel="stylesheet" type="text/css" />
-//     <link rel="stylesheet" href="ShopPage.css" type="text/css" />
-// </head>
-// <body>
-
-    
-
-
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
+import {useState, useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './reset.css';
+import useFetch from './DbApi/useFetch';
+import {GET} from './YoutubeApi/useFetch';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
+
 function Home(){
-    return(
-        <React.StrictMode>
-            <nav class="navbar navbar-expand-lg navigation">
-            <div class="container">
-            <a class="navbar-brand" href="#">VideoSharing</a>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                </ul>
-                <span class="navbar-text">
-                    Logout
-                </span>
-            </div>
-            </div>
-        </nav>
+    let navigate = useNavigate();
+    const [youtubeData, setYoutubeData] = useState(null);
+    const { data, loading, error, refetch } = useFetch("https://localhost:7037/api/Video");
 
-        <div class="container main">
-            <div class="row section">
+    const getIdFromUrl = (link) => {
+        var video_id = link.split('v=')[1];
+        var ampersandPosition = video_id.indexOf('&');
+        if(ampersandPosition != -1) {
+            video_id = video_id.substring(0, ampersandPosition);
+        }
+        return video_id;
+    }
 
-                {/* <!-- <div class="section-gap col-lg-1"></div> --> */}
-                <div class="right-section col-lg-12">
-
-                    {/* <!-- <div class="row"> --> */}
-                        
-                        <div class="productCard col-lg-3">
-                            <div class="row productCardImage">
-                                <img src="https://i.ytimg.com/vi/idYUy3hf3D0/maxresdefault.jpg" />
+    useEffect( () => {
+        var API_LINK = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&";
+        var API_KEY = "AIzaSyBjDUNaQuS1B8eTeCPu01W0EyMruB6gr_Y";
+        if( data != null ){
+            var newData = data.map( x => "id="+getIdFromUrl(x.link)+"&" );
+            var newDataUserId = data.map( x => x.vId );
+            API_LINK += newData.join("");
+            API_LINK += "key=" + API_KEY
+            console.log(API_LINK);
+            
+            const response = GET(API_LINK);
+            response.then( function(r){
+                const status = r.status;
+                if( status == 200 ){
+                    var resData = r.data.items.map( 
+                        //x => [ x.id, x.snippet.title, x.snippet.description, x.snippet.thumbnails.maxres.url ] 
+                        // x => <li>{x.snippet.thumbnails.maxres.url}</li>
+                        (x, i) =>
+                        <div onClick={clickView} class="productCard col-lg-3" id={newDataUserId[i]}>
+                            <div  class="row productCardImage"  >
+                                <img src={x.snippet.thumbnails.maxres.url} />
                             </div>
                             <div class="row productCardDetails">
-                                <p>Show YouTube videos on your own website! | YouTube API Tutorial</p>
+                                <p>{x.snippet.title}</p>
                             </div>
-                            {/* <div class="row productCardPrice">
-                                <p>Just putting a link to the youtube channel is boring, this video shows you how you can work with the YouTube API to show your videos directly on the website itself.</p>
-                            </div> */}
                         </div>
+                    );
+                    setYoutubeData(resData);
+                    console.log(youtubeData);
+                }
+            } )
+        }
+    },[data]);
 
-                        <div class="productCard col-lg-3">
-                        <div class="row productCardImage">
-                            <img src="images/product (2).jpg" />
-                        </div>
-                        <div class="row productCardDetails">
-                            <p>Best quality food ever created please buy it. Contact us in chewy.com</p>
-                        </div>
-                        <div class="row productCardPrice">
-                            <p>Price: <span class="priceTag" >$25.99</span></p>
-                        </div>
-                    </div>
-                    
+    const GetYoutubeData = (e) => {
+        //e.preventDefault();
+        var API_LINK = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&";
+        var API_KEY = "AIzaSyBjDUNaQuS1B8eTeCPu01W0EyMruB6gr_Y";
+        if( data != null ){
+            var newData = data.map( x => "id="+getIdFromUrl(x.link)+"&" );
+            API_LINK += newData.join("");
+            API_LINK += "key=" + API_KEY
+            console.log(API_LINK);
+            
+            const response = GET(API_LINK);
+            response.then( function(r){
+                const status = r.status;
+                if( status == 200 ){
+                    var resData = r.data.items.map( 
+                        //x => [ x.id, x.snippet.title, x.snippet.description, x.snippet.thumbnails.maxres.url ] 
+                        x => <li>{x.snippet.thumbnails.maxres.url}</li>
+                        // <div class="productCard col-lg-3">
+                        //     <div class="row productCardImage">
+                        //         <img src={x.snippet.thumbnails.maxres.url} />
+                        //     </div>
+                        //     <div class="row productCardDetails">
+                        //         <p>{x.snippet.title}</p>
+                        //     </div>
+                        // </div>
+                    );
+                    setYoutubeData(resData);
+                    console.log(youtubeData);
+                }
+            } )
+            return youtubeData;
+        }
+    }
+    //GetYoutubeData();
+    
+    // var idList = data.map( x => getIdFromUrl(x.link) );
+    // console.log(idList);
+    
+    const temp = 
+    (
+        <div class="productCard col-lg-3">
+            <div class="row productCardImage">
+                <img src="https://i.ytimg.com/vi/idYUy3hf3D0/maxresdefault.jpg" />
+            </div>
+            <div class="row productCardDetails">
+                <p>Show YouTube videos on your own website! | YouTube API Tutorial</p>
+            </div>
+        </div>
+    );
 
-                    <div class="productCard col-lg-3">
-                        <div class="row productCardImage">
-                            <img src="images/product (3).jpg" />
-                        </div>
-                        <div class="row productCardDetails">
-                            <p>Best quality food ever created please buy it. Contact us in chewy.com</p>
-                        </div>
-                        <div class="row productCardPrice">
-                            <p>Price: <span class="priceTag" >$25.99</span></p>
-                        </div>
-                    </div>
+    const clickView = (e) => {
+        navigate("/ViewVideoPage/"+e.currentTarget.id);
+        console.log( e.currentTarget.id );
+    }
 
-
-                    <div class="productCard col-lg-3">
-                    <div class="row productCardImage">
-                        <img src="images/product (4).jpg" />
-                    </div>
-                    <div class="row productCardDetails">
-                        <p>Best quality food ever created please buy it. Contact us in chewy.com</p>
-                    </div>
-                    <div class="row productCardPrice">
-                        <p>Price: <span class="priceTag" >$25.99</span></p>
-                    </div>
-                    </div>
-
-                    <div class="productCard col-lg-3">
-                        <div class="row productCardImage">
-                            <img src="images/product (4).jpg" />
-                        </div>
-                        <div class="row productCardDetails">
-                            <p>Best quality food ever created please buy it. Contact us in chewy.com</p>
-                        </div>
-                        <div class="row productCardPrice">
-                            <p>Price: <span class="priceTag" >$25.99</span></p>
-                        </div>
-                    </div>
-                
-
-
-                    {/* <!-- </div> --> */}
-
+    return(
+        <React.StrictMode>
+        <div class="container homeContainer">
+            <div class="row section homeSection">
+                <div class="right-section col-lg-12">
+                    {youtubeData === null ? temp : youtubeData}
                 </div>
             </div>
         </div>

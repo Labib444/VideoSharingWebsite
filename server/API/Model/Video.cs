@@ -9,6 +9,10 @@ namespace API.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int VId { get; set; }
 
+        public int UId { get; set; }
+        [ForeignKey("UId")]
+        public User user { get; set; }
+
         [Required]
         public string Link { get; set; }
         //public int Quantity { get; set; }

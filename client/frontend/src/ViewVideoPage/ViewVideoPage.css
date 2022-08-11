@@ -1,0 +1,35 @@
+:root{
+    --darkColor : #ff9933;
+    --lightColor: #ffcc99;
+    --whiteColor: #fff;
+
+    --fontName: Open Sans;
+}
+
+.detailContainer{
+    font-family: var(--fontName);
+    margin-top: 5%;
+}
+
+.detailContainer iframe{
+    width: 80%;
+    height: 450px;
+}
+
+.videoRow{
+    text-align: center;
+}
+
+.inputButton button {
+    background-color: var(--darkColor);
+    color: var(--whiteColor);
+    border: 1px solid var(--whiteColor);
+    font-family: var(--fontName);
+}
+
+.inputRowContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2em;
+}
